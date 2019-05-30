@@ -77,11 +77,6 @@
       }
     },
     created(){
-      this.$http.get("/brand/page",{
-        params:{
-          page : 1,
-        }
-      }).then(resp => {})
       // this.brands = [
       //   {id: 1,name: "xiaomi", image: "", letter: "x"},
       //   {id: 2,name: "xiaomi", image: "", letter: "x"},
@@ -93,7 +88,8 @@
     },
     methods:{
       loadBrands(){
-        this.$http.get("/brand/page",{
+        this.loading = true;
+        this.$http.get("/item/brand/page",{
           params:{
             page: this.pagination.page,// 当前页
             rows: this.pagination.rowsPerPage,// 每页大小
@@ -101,11 +97,17 @@
             desc: this.pagination.descending,//排序方式
             key: this.key // 搜索条件
           }
+        }).then(resp =>{
+          this.loading = false;
+          console.log(resp);
+          this.brands = resp.data.items;
+          this.totalBrands = resp.data.total;
         })
       }
     },
     watch:{
       key(){
+        this.pagination.page = 1;
         this.loadBrands();
       },
       pagination(){
